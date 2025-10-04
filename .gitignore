@@ -1,0 +1,14 @@
+# Power BI and common
+*.pbix
+*.pbix.1
+*.tmp
+*.cache
+*.json
+.vscode/
+.DS_Store
+__pycache__/
+# Git LFS metadata
+*.gitattributes
+# Node / env
+node_modules/
+.env
