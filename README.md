@@ -105,8 +105,8 @@ git clone https://github.com/tuusuario/ventas-clientes-bi.git
 ---
 
 ## 📢 Conectemos
-🔗 LinkedIn: [Tu perfil]  
-📧 Email: [Tu email]  
+🔗 LinkedIn: https://www.linkedin.com/in/fernando-romero-6bb010172/
+📧 Email: fernandoromero256@gmail.com 
 
 🙌 Si este proyecto te resulta útil, ¡no olvides dejar una ⭐ en GitHub! 🚀
 
