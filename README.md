@@ -6,11 +6,6 @@ Está diseñado para dar seguimiento a métricas financieras clave y ofrecer ins
 
 ---
 
-## 📊 Vista Previa del Dashboard
-👉 (Aquí se puede incluir un link a la versión publicada en Power BI Service o capturas en `/docs/Screenshots`).
-
----
-
 ## 🏢 Caso de Uso en la Industria
 El análisis del desempeño en ventas es crítico para organizaciones que buscan **optimizar ingresos**, **monitorear tendencias** y **mejorar la toma de decisiones estratégicas**.  
 Este proyecto aplica **mejores prácticas de Business Intelligence (BI)** y **visualización de datos** para entregar insights accionables sobre crecimiento interanual, satisfacción de clientes y rentabilidad.
@@ -20,7 +15,7 @@ Este proyecto aplica **mejores prácticas de Business Intelligence (BI)** y **vi
 ## 🔹 Funcionalidades y Características Principales
 
 ### 📌 Insights Ejecutivos
-- **Análisis de Crecimiento YoY**: tendencias de crecimiento usando `REMOVEFILTERS()` para asegurar visibilidad global.  
+- **Análisis de Crecimiento YoY**: tendencias de crecimiento para asegurar visibilidad global.  
 - **KPIs de Ventas Netas, Brutas y Egresos**: con comparaciones históricas.  
 - **Participación de Productos**: proporción de ventas por categoría o producto.  
 
@@ -35,7 +30,7 @@ Este proyecto aplica **mejores prácticas de Business Intelligence (BI)** y **vi
   - Vista ejecutiva → ignora filtros de usuario.  
   - Vista operativa → respeta segmentaciones.  
 - **Ventas Acumuladas Proyecto**: cálculo acumulado desde el inicio hasta la fecha actual.  
-- **KPIs de Calidad de Datos**: como `% Ratio Devoluciones`, `Filas con Importe Negativo`, `Filas sin Cliente`.  
+- **KPIs de Calidad de Datos**: como `% Ratio Devoluciones`.  
 
 ---
 
@@ -47,7 +42,7 @@ Este proyecto aplica **mejores prácticas de Business Intelligence (BI)** y **vi
 | DAX (Data Analysis Expressions) | Cálculo de KPIs avanzados |
 | Power Query | Transformación y limpieza de datos |
 | SQL (opcional) | Extracción y preprocesamiento de datos |
-| Excel       | Validación de medidas (QA) |
+| Excel       | Dicionario de datos |
 | Tabular Editor | Organización del modelo y exportación de scripts |
 
 ---
@@ -58,7 +53,7 @@ Este proyecto aplica **mejores prácticas de Business Intelligence (BI)** y **vi
 │── 📂 report/           # Informes principales en Power BI (.pbix / .pbit)
 │── 📂 model/            # Modelo tabular y medidas (measures.dax / measures.md)
 │── 📂 docs/             # Documentación, diccionario de datos, esquema relacional
-│── 📂 tests/            # Archivos de QA de medidas
+│── 📜 .gitignore           # Archivos a no rastrear
 │── 📜 README.md         # Documentación principal
 ```
 
@@ -116,8 +111,8 @@ git clone https://github.com/tuusuario/ventas-clientes-bi.git
 ---
 
 ## 📢 Conectemos
-🔗 LinkedIn: [Tu perfil]  
-📧 Email: [Tu email]  
+🔗 LinkedIn: https://www.linkedin.com/in/fernando-romero-6bb010172/  
+📧 Email: fernandoromero256@gmail.com 
 
 🙌 Si este proyecto te resulta útil, ¡no olvides dejar una ⭐ en GitHub! 🚀
 
