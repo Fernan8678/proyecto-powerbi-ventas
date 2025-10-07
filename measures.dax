@@ -1,0 +1,177 @@
+ImporteDolares_Egresos = 
+CALCULATE(
+    SUM(Fact_ventas[ImporteDolares]),
+    Fact_ventas[Clasificación Comprobante] = "Egresos por Ventas"
+)
+
+ImporteDolares_Ingresos = 
+CALCULATE(
+    SUM(Fact_ventas[ImporteDolares]),
+    Fact_ventas[Clasificación Comprobante] = "Ingresos por Ventas"
+)
+
+ImportePesos_Egresos = 
+CALCULATE(
+    SUM(Fact_ventas[ImportePesos]),
+    Fact_ventas[Clasificación Comprobante] = "Egresos por Ventas"
+)
+
+ImportePesos_Ingresos = 
+CALCULATE(
+    SUM(Fact_ventas[ImportePesos]),
+    Fact_ventas[Clasificación Comprobante] = "Ingresos por Ventas"
+)
+
+Total Venta Bruta = 
+VAR _Moneda = SELECTEDVALUE(Dim_moneda[Moneda],"Peso") 
+RETURN
+SWITCH(_Moneda,
+    "Peso",[ImportePesos_Ingresos],
+    "Dolar",[ImporteDolares_Ingresos],
+    BLANK()
+)
+
+Total Venta Neta = 
+VAR _Monedas = SELECTEDVALUE(Dim_moneda[Moneda],"Peso") 
+RETURN
+SWITCH(_Monedas,
+    "Peso", IF(ISBLANK([Total Venta Bruta]),0,[Total Venta Bruta] - ABS([ImportePesos_Egresos])),
+    "Dolar",IF(ISBLANK([Total Venta Bruta]),0,[Total Venta Bruta] - ABS([ImporteDolares_Egresos])),
+    BLANK()
+)
+
+Total Egresos por Ventas = 
+VAR _Moneda = SELECTEDVALUE(Dim_moneda[Moneda],"Peso") 
+RETURN
+SWITCH(_Moneda,
+    "Peso",ABS([ImportePesos_Egresos]),
+    "Dolar",ABS([ImporteDolares_Egresos]),
+    0
+)
+
+Total Venta AC = 
+TOTALYTD([Total Venta Neta],Dim_fechas[Fecha_Key])
+
+Total Venta AC LY = 
+CALCULATE([Total Venta AC],SAMEPERIODLASTYEAR(Dim_fechas[Fecha_Key]))
+
+Total Venta LY = 
+CALCULATE([Total Venta Neta],SAMEPERIODLASTYEAR(Dim_fechas[Fecha_Key]))
+
+Total Ventas MTD = 
+TOTALMTD([Total Venta Neta],Dim_fechas[Fecha_Key])
+
+Total Ventas QTD = 
+TOTALQTD([Total Venta Neta],Dim_fechas[Fecha_Key])
+
+Variación Absoluta = 
+[Total Venta Neta] - [Total Venta LY]
+
+Variación % = 
+DIVIDE([Variación Absoluta],[Total Venta LY],0)
+
+Promedio Ventas = 
+VAR Promedio_ = AVERAGEX(VALUES(Dim_fechas[Mes_nombre]), CALCULATE([Total Venta Neta]))
+RETURN COALESCE(Promedio_,0)
+
+Total Ventas Acumuladas Proyecto = 
+CALCULATE (
+    [Total Venta Neta],
+    ALL (Dim_fechas), 
+    Dim_fechas[Fecha_Key]<= MAX ( Dim_fechas[Fecha_Key])
+)
+
+Unidades Vendidas = 
+VAR Unidades_ = CALCULATE(SUM(Fact_ventas[Cantidad]), Fact_ventas[Clasificación Comprobante] = "Ingresos por Ventas")
+RETURN IF(ISBLANK(Unidades_),0,CALCULATE(Unidades_,VALUES(Dim_producto[Tipo_Producto])))
+
+Unidades Vendidas Prod = 
+CALCULATE([Unidades Vendidas], USERELATIONSHIP(Fact_ventas[Producto_Key], Dim_producto[Producto_Key]))
+
+% Participación Producto = 
+DIVIDE([Total Venta Producto], CALCULATE([Total Venta Producto],ALL(Dim_producto)),0)
+
+Participacion_Producto = 
+DIVIDE([Total Venta Producto], CALCULATE([Total Venta Producto],ALL(Dim_producto)),0)
+
+Promedio Venta Producto = 
+VAR ProductosConVenta = FILTER(VALUES(Dim_producto[Producto]), CALCULATE([Total Venta Producto]) > 0)
+RETURN IF(COUNTROWS(ProductosConVenta) = 0, BLANK(), AVERAGEX(ProductosConVenta, CALCULATE([Total Venta Producto])))
+
+Ranking Productos = 
+IF(ISBLANK([Total Venta Producto]), BLANK(), RANKX(ALLSELECTED(Dim_producto[Tipo_Producto]),[Total Venta Producto],,DESC,Dense))
+
+Ranking Productos LY = 
+IF(ISBLANK([Total Venta Producto]), BLANK(), RANKX(ALLSELECTED(Dim_producto[Tipo_Producto]),[Total Venta Producto LY],,DESC,Dense))
+
+Diferencia de posiciones ranking producto = 
+[Ranking Productos LY]- [Ranking Productos]
+
+Total Venta Producto = 
+CALCULATE([Total Venta Neta], USERELATIONSHIP(Fact_ventas[Producto_Key],Dim_producto[Producto_Key]))
+
+Total Venta Producto AC = 
+CALCULATE([Total Venta AC], USERELATIONSHIP(Fact_ventas[Producto_Key],Dim_producto[Producto_Key]))
+
+Total Venta Producto LY = 
+CALCULATE([Total Venta LY], USERELATIONSHIP(Fact_ventas[Producto_Key],Dim_producto[Producto_Key]))
+
+Dias Transcurridos UV Producto = 
+CALCULATE([Dias Transcurridos UV],USERELATIONSHIP(Dim_producto[Producto_Key],Fact_ventas[Producto_Key]))
+
+Clientes Totales = 
+VAR Cliente_ = CALCULATE(COUNT(Dim_cliente[Cliente_Key]), CROSSFILTER(Dim_cliente[Cliente_Key],Fact_ventas[Cliente_Key],Both))
+RETURN COALESCE(Cliente_,0)
+
+Ranking Clientes = 
+IF(ISBLANK([Total Venta Neta]), BLANK(), RANKX(ALLSELECTED(Dim_cliente),[Total Venta Neta],,DESC,Dense))
+
+Ranking Clientes LY = 
+IF(ISBLANK([Total Venta LY]), BLANK(), RANKX(ALLSELECTED(Dim_cliente),[Total Venta LY],,DESC,Dense))
+
+Cambio Ranking Clientes = 
+[Ranking Clientes LY] - [Ranking Clientes]
+
+Diferencia de posiciones ranking = 
+[Ranking Clientes LY] - [Ranking Clientes]
+
+Ultima Compra = 
+CALCULATE(MAX(Fact_ventas[Fecha_Key]), FILTER(Fact_ventas,Fact_ventas[Cliente_Key] = RELATED(Dim_cliente[Cliente_Key])))
+
+Dias Transcurridos UV = 
+DATEDIFF([Ultima Compra],TODAY(),DAY)
+
+Promedio de Venta por cliente = 
+VAR ClientesConVenta = FILTER(VALUES(Dim_cliente[Cliente_Key]), CALCULATE([Total Venta Neta]) > 0)
+RETURN IF(COUNTROWS(ClientesConVenta)=0, BLANK(), AVERAGEX(ClientesConVenta, CALCULATE([Total Venta Neta])))
+
+Promedio Mensual Cliente = 
+CALCULATE([Promedio de Venta por cliente],ALLSELECTED(Dim_fechas[Mes_nombre]))
+
+Mediana Venta por Cliente = 
+VAR ClientesConVenta = FILTER(VALUES(Dim_cliente[Cliente_Key]), CALCULATE([Total Venta Neta]) > 0)
+RETURN IF(COUNTROWS(ClientesConVenta)=0, BLANK(), MEDIANX(ClientesConVenta, CALCULATE([Total Venta Neta])))
+
+Titulo Venta por provincia = 
+"VENTAS POR CIUDAD EN " & SELECTEDVALUE(Dim_geografica[Provincia]) & " ("&[Clientes Totales]&" "& IF([Clientes Totales]>1,"clientes)","cliente)")
+
+Cantidad Devoluciones = 
+VAR Devo = CALCULATE(SUM(Fact_ventas[Cantidad]), Fact_ventas[Clasificación Comprobante] = "Devoluciones", USERELATIONSHIP(Fact_ventas[Producto_Key], Dim_producto[Producto_Key]))
+RETURN COALESCE(Devo,0)
+
+% Ratio Devoluciones = 
+DIVIDE([Cantidad Devoluciones],[Unidades Vendidas],BLANK())
+
+Filas con Importe Negativo = 
+CALCULATE(COUNTROWS(Fact_ventas), FILTER(Fact_ventas, Fact_ventas[ImportePesos] <= 0))
+
+Filas sin Cliente = 
+CALCULATE(COUNTROWS(Fact_ventas), FILTER(Fact_ventas, ISBLANK(Fact_ventas[Cliente_Key])))
+
+Filas totales = 
+COUNTROWS(Fact_ventas)
+
+Comprobantes Totales = 
+VAR Comprobante_ = CALCULATE(COUNT(Dim_comprobante[Comprobante_Key]), CROSSFILTER(Dim_comprobante[Comprobante_Key],Fact_ventas[comprobante_key],Both))
+RETURN COALESCE(Comprobante_,0)
+
