@@ -1,7 +1,0 @@
-Total Ventas Acumuladas Proyecto = 
-CALCULATE (
-    [Total Venta Neta],
-    ALL (Dim_fechas), // Elimina los filtros de la tabla calendario
-    Dim_fechas[Fecha_Key]<= MAX ( Dim_fechas[Fecha_Key]) // Asegura que se sumen todas las fechas hasta la actual
-)
-
