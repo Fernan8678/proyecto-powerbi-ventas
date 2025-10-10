@@ -264,7 +264,13 @@ CALCULATE([Total Venta LY], USERELATIONSHIP(Fact_ventas[Producto_Key],Dim_produc
 Dias Transcurridos UV Producto = 
 CALCULATE([Dias Transcurridos UV],USERELATIONSHIP(Dim_producto[Producto_Key],Fact_ventas[Producto_Key]))
 ```
+### Ultima Compra Producto 
+**Descripción:** Última fecha de compra por producto.
 
+```DAX
+Ultima Compra Prod = CALCULATE([Ultima Compra],USERELATIONSHIP(Dim_producto[Producto_Key],Fact_ventas[Producto_Key]))
+)
+```
 ## 👥 Clientes
 ### Clientes Totales
 **Descripción:** Cantidad de clientes totales con ventas.
@@ -311,8 +317,11 @@ Diferencia de posiciones ranking =
 **Descripción:** Última fecha de compra por cliente.
 
 ```DAX
-Ultima Compra = 
-CALCULATE(MAX(Fact_ventas[Fecha_Key]), FILTER(Fact_ventas,Fact_ventas[Cliente_Key] = RELATED(Dim_cliente[Cliente_Key])))
+Ultima Compra =
+CALCULATE (
+    MAX ( Fact_ventas[Fecha_Key] ),
+    ALLEXCEPT ( Fact_ventas, Fact_ventas[Cliente_Key] )
+)
 ```
 
 ### Dias Transcurridos UV
