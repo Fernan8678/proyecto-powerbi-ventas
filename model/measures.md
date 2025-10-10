@@ -173,7 +173,7 @@ RETURN COALESCE(Promedio_,0)
 ```DAX
 Unidades Vendidas = 
 VAR Unidades_ = CALCULATE(SUM(Fact_ventas[Cantidad]), Fact_ventas[Clasificación Comprobante] = "Ingresos por Ventas")
-RETURN IF(ISBLANK(Unidades_),0,CALCULATE(Unidades_,VALUES(Dim_producto[Tipo_Producto])))
+RETURN IF(ISBLANK(Unidades_),0,CALCULATE(Unidades_))
 ```
 
 ### Unidades Vendidas Prod
