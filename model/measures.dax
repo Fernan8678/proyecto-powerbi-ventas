@@ -83,7 +83,7 @@ CALCULATE (
 
 Unidades Vendidas = 
 VAR Unidades_ = CALCULATE(SUM(Fact_ventas[Cantidad]), Fact_ventas[Clasificación Comprobante] = "Ingresos por Ventas")
-RETURN IF(ISBLANK(Unidades_),0,CALCULATE(Unidades_,VALUES(Dim_producto[Tipo_Producto])))
+RETURN IF(ISBLANK(Unidades_),0,CALCULATE(Unidades_,))
 
 Unidades Vendidas Prod = 
 CALCULATE([Unidades Vendidas], USERELATIONSHIP(Fact_ventas[Producto_Key], Dim_producto[Producto_Key]))
@@ -119,6 +119,8 @@ CALCULATE([Total Venta LY], USERELATIONSHIP(Fact_ventas[Producto_Key],Dim_produc
 Dias Transcurridos UV Producto = 
 CALCULATE([Dias Transcurridos UV],USERELATIONSHIP(Dim_producto[Producto_Key],Fact_ventas[Producto_Key]))
 
+Ultima Compra Prod = CALCULATE([Ultima Compra],USERELATIONSHIP(Dim_producto[Producto_Key],Fact_ventas[Producto_Key]))
+
 Clientes Totales = 
 VAR Cliente_ = CALCULATE(COUNT(Dim_cliente[Cliente_Key]), CROSSFILTER(Dim_cliente[Cliente_Key],Fact_ventas[Cliente_Key],Both))
 RETURN COALESCE(Cliente_,0)
@@ -136,7 +138,7 @@ Diferencia de posiciones ranking =
 [Ranking Clientes LY] - [Ranking Clientes]
 
 Ultima Compra = 
-CALCULATE(MAX(Fact_ventas[Fecha_Key]), FILTER(Fact_ventas,Fact_ventas[Cliente_Key] = RELATED(Dim_cliente[Cliente_Key])))
+CALCULATE (MAX (Fact_ventas[Fecha_Key]),ALLEXCEPT ( Fact_ventas, Fact_ventas[Cliente_Key]))
 
 Dias Transcurridos UV = 
 DATEDIFF([Ultima Compra],TODAY(),DAY)
